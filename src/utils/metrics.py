@@ -197,4 +197,205 @@ class MetricsCalculator:
     @staticmethod
     def calculate_logical_coherence(responses: List[Dict]) -> float:
         """
-        Calculate logical coherence based on contradiction
+        Calculate logical coherence based on contradictions and consistency.
+        
+        Args:
+            responses: List of model responses
+            
+        Returns:
+            Logical coherence score between 0 and 1
+        """
+        if not responses:
+            return 0.0
+            
+        total_coherence = 0
+        
+        for response_dict in responses:
+            response = response_dict.get('response', '')
+            coherence = 1.0  # Start with perfect coherence
+            
+            # Check for contradictory statements
+            contradictions = [
+                (r'\byes\b.*\bno\b', r'\bno\b.*\byes\b'),
+                (r'\btrue\b.*\bfalse\b', r'\bfalse\b.*\btrue\b'),
+                (r'\bcorrect\b.*\bincorrect\b', r'\bincorrect\b.*\bcorrect\b')
+            ]
+            
+            for pos_pattern, neg_pattern in contradictions:
+                if (re.search(pos_pattern, response, re.IGNORECASE) or 
+                    re.search(neg_pattern, response, re.IGNORECASE)):
+                    coherence -= 0.3
+            
+            # Check for logical flow indicators
+            if re.search(r'\b(however|but)\b.*\b(however|but)\b', response, re.IGNORECASE):
+                coherence -= 0.2  # Multiple contradictory statements
+                
+            total_coherence += max(coherence, 0.0)
+        
+        return total_coherence / len(responses)
+    
+    @classmethod
+    def evaluate_responses(
+        cls, 
+        responses: List[Dict], 
+        ground_truth: Optional[List[str]] = None
+    ) -> EvaluationResult:
+        """
+        Comprehensive evaluation of model responses.
+        
+        Args:
+            responses: List of response dictionaries
+            ground_truth: Optional ground truth answers for accuracy calculation
+            
+        Returns:
+            EvaluationResult object with all metrics
+        """
+        # Calculate accuracy if ground truth provided
+        accuracy = 0.0
+        if ground_truth:
+            accuracy = cls.calculate_accuracy(responses, ground_truth)
+        
+        # Calculate other metrics
+        reasoning_quality = cls.calculate_reasoning_quality(responses)
+        confidence = cls.calculate_confidence(responses)
+        response_length = cls.calculate_response_length(responses)
+        logical_coherence = cls.calculate_logical_coherence(responses)
+        
+        return EvaluationResult(
+            accuracy=accuracy,
+            reasoning_quality=reasoning_quality,
+            confidence=confidence, 
+            response_length=response_length,
+            logical_coherence=logical_coherence
+        )
+
+
+class TrainingProgressTracker:
+    """Track training progress over iterations."""
+    
+    def __init__(self):
+        self.history = []
+        
+    def add_iteration(self, iteration: int, metrics: EvaluationResult):
+        """Add metrics for an iteration."""
+        self.history.append({
+            'iteration': iteration,
+            'metrics': metrics,
+            'timestamp': np.datetime64('now')
+        })
+    
+    def get_improvement(self, metric_name: str) -> float:
+        """Get improvement in a specific metric from first to last iteration."""
+        if len(self.history) < 2:
+            return 0.0
+            
+        first_value = getattr(self.history[0]['metrics'], metric_name)
+        last_value = getattr(self.history[-1]['metrics'], metric_name)
+        
+        return last_value - first_value
+    
+    def get_trend(self, metric_name: str, window: int = 3) -> str:
+        """Get trend for a metric (improving/declining/stable)."""
+        if len(self.history) < window:
+            return "insufficient_data"
+            
+        recent_values = [
+            getattr(entry['metrics'], metric_name) 
+            for entry in self.history[-window:]
+        ]
+        
+        # Simple trend detection
+        if all(recent_values[i] <= recent_values[i+1] for i in range(len(recent_values)-1)):
+            return "improving"
+        elif all(recent_values[i] >= recent_values[i+1] for i in range(len(recent_values)-1)):
+            return "declining"
+        else:
+            return "stable"
+    
+    def should_stop_training(self, patience: int = 3) -> bool:
+        """Determine if training should stop based on lack of improvement."""
+        if len(self.history) < patience + 1:
+            return False
+            
+        # Check if accuracy hasn't improved in last 'patience' iterations
+        recent_accuracies = [
+            entry['metrics'].accuracy 
+            for entry in self.history[-patience-1:]
+        ]
+        
+        best_recent = max(recent_accuracies[:-1])  # Best before last iteration
+        current = recent_accuracies[-1]  # Last iteration
+        
+        return current <= best_recent
+    
+    def get_summary(self) -> Dict[str, Any]:
+        """Get summary statistics."""
+        if not self.history:
+            return {}
+            
+        latest = self.history[-1]['metrics']
+        
+        summary = {
+            'total_iterations': len(self.history),
+            'latest_metrics': latest.to_dict(),
+            'improvements': {}
+        }
+        
+        # Calculate improvements for each metric
+        for metric_name in ['accuracy', 'reasoning_quality', 'confidence', 'logical_coherence']:
+            summary['improvements'][metric_name] = {
+                'total_improvement': self.get_improvement(metric_name),
+                'trend': self.get_trend(metric_name)
+            }
+        
+        return summary
+
+
+# Utility functions for common metric operations
+def compare_model_performance(
+    before_responses: List[Dict], 
+    after_responses: List[Dict],
+    ground_truth: Optional[List[str]] = None
+) -> Dict[str, float]:
+    """
+    Compare model performance before and after training.
+    
+    Returns:
+        Dictionary with improvement metrics
+    """
+    calculator = MetricsCalculator()
+    
+    before_metrics = calculator.evaluate_responses(before_responses, ground_truth)
+    after_metrics = calculator.evaluate_responses(after_responses, ground_truth)
+    
+    improvements = {}
+    for key in before_metrics.to_dict().keys():
+        before_val = getattr(before_metrics, key)
+        after_val = getattr(after_metrics, key)
+        improvements[f"{key}_improvement"] = after_val - before_val
+        improvements[f"{key}_relative_improvement"] = (
+            (after_val - before_val) / before_val if before_val > 0 else 0
+        )
+    
+    return improvements
+
+
+def format_metrics_table(metrics: EvaluationResult) -> str:
+    """Format metrics as a readable table."""
+    table = "Model Performance Metrics\n"
+    table += "=" * 25 + "\n"
+    
+    for key, value in metrics.to_dict().items():
+        formatted_key = key.replace('_', ' ').title()
+        table += f"{formatted_key:<20}: {value:.3f}\n"
+    
+    return table
+
+
+__all__ = [
+    "EvaluationResult",
+    "MetricsCalculator", 
+    "TrainingProgressTracker",
+    "compare_model_performance",
+    "format_metrics_table"
+]
