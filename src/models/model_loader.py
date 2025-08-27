@@ -241,4 +241,39 @@ class ModelLoader(LoggerMixin):
             model = AutoModelForCausalLM.from_pretrained(
                 str(load_path),
                 trust_remote_code=True,
-                torch_dtype=torch.float
+                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
+                device_map="auto" if self.device == "cuda" else None
+            )
+            
+            # Move to device if needed
+            if self.device != "cuda":
+                model = model.to(self.device)
+            
+            self.logger.info(f"Loaded saved target model from: {load_path}")
+            
+            return model, tokenizer
+            
+        except Exception as e:
+            log_error_with_context(e, f"loading saved model from {load_path}")
+            raise
+    
+    def cleanup(self):
+        """Clean up all loaded models and free memory."""
+        self.logger.info("Cleaning up loaded models...")
+        
+        for key in list(self.loaded_models.keys()):
+            model, tokenizer = self.loaded_models[key]
+            del model, tokenizer
+            
+        self.loaded_models.clear()
+        
+        # Force garbage collection
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        
+        self.logger.info("Model cleanup completed")
+
+
+# Singleton instance for easy access
+model_loader = ModelLoader()
