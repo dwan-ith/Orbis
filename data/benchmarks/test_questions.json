@@ -1,0 +1,92 @@
+[
+  {
+    "question": "What is 2 + 2?",
+    "expected_answer": "4",
+    "category": "arithmetic",
+    "difficulty": "easy"
+  },
+  {
+    "question": "If Tom is taller than Jerry, and Jerry is taller than Spike, who is shortest?",
+    "expected_answer": "Spike",
+    "category": "logic",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What comes after Monday?",
+    "expected_answer": "Tuesday",
+    "category": "knowledge",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Is a cat a mammal?",
+    "expected_answer": "Yes",
+    "category": "knowledge",
+    "difficulty": "easy"
+  },
+  {
+    "question": "If it's raining, should I bring an umbrella?",
+    "expected_answer": "Yes",
+    "category": "reasoning",
+    "difficulty": "easy"
+  },
+  {
+    "question": "If A > B and B > C, which is largest?",
+    "expected_answer": "A",
+    "category": "logic",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What is the opposite of hot?",
+    "expected_answer": "Cold",
+    "category": "knowledge",
+    "difficulty": "easy"
+  },
+  {
+    "question": "If I have 5 apples and eat 2, how many do I have left?",
+    "expected_answer": "3",
+    "category": "arithmetic",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Can you fly without wings or a machine?",
+    "expected_answer": "No",
+    "category": "reasoning",
+    "difficulty": "easy"
+  },
+  {
+    "question": "If all birds can fly, and a penguin is a bird, can penguins fly?",
+    "expected_answer": "No, the premise is incorrect",
+    "category": "logic",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What is bigger: a mountain or a pebble?",
+    "expected_answer": "Mountain",
+    "category": "knowledge",
+    "difficulty": "easy"
+  },
+  {
+    "question": "If today is Wednesday, what day was it yesterday?",
+    "expected_answer": "Tuesday",
+    "category": "reasoning",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Can something be both true and false at the same time?",
+    "expected_answer": "No",
+    "category": "logic",
+    "difficulty": "medium"
+  },
+  {
+    "question": "If I flip a coin, what are the possible outcomes?",
+    "expected_answer": "Heads or tails",
+    "category": "knowledge",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Is water wet?",
+    "expected_answer": "Yes",
+    "category": "knowledge",
+    "difficulty": "easy"
+  }
+]
