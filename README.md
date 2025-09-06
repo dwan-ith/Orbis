@@ -33,7 +33,7 @@ python src/main.py
 
 Note: Ensure you have Python 3.8+ installed. Check the Installation Guide for detailed setup instructions.
 
-Example Results
+# Example Results
 Before Training
 Question: If A > B and B > C, who is smallest?
 Target Model: A is smallest (Incorrect)
@@ -42,7 +42,7 @@ After gpt-oss Training
 Question: If A > B and B > C, who is smallest?
 Target Model: C is smallest because in the chain A > B > C, C has the lowest value (Correct with reasoning)
 
-How It Works
+# How It Works
 The training pipeline operates in five key phases:
 
 Evaluation: The target model is tested on reasoning tasks to assess performance.
@@ -55,40 +55,8 @@ Training: The target model is fine-tuned using the generated data.
 
 Meta-Learning: The training strategy is evaluated and optimized based on performance trends.
 
-Project Structure
-
-Orbis/
-
-├── src/                    # Core source code
-
-│   ├── main.py             # Main training orchestrator
-
-│   ├── core/               # Core components
-
-│   │   ├── evaluator.py    # Model testing and evaluation
-
-│   │   ├── analyzer.py     # gpt-oss performance analysis
-
-│   │   ├── trainer.py      # Fine-tuning logic
-
-│   │   └── data_generator.py # Training data generation
-
-│   ├── models/             # Model loading and management
-
-│   └── utils/              # Utilities and helper functions
-
-├── scripts/                # Utility scripts (e.g., download_models.py)
-
-├── examples/               # Example scripts and demos
-
-├── docs/                  # Documentation files
-
-├── requirements.txt        # Project dependencies
-
-└── LICENSE                 # MIT License file
-
-
-Configuration
+    
+# Configuration
 
 Customize the training process by editing src/config/settings.py:
 
@@ -101,7 +69,7 @@ Evaluation Metrics: Define success criteria for model performance.
 Output Directories: Specify where logs and models are saved.
 
 
-Contributing
+# Contributing
 We welcome contributions! To contribute:
 
 Fork the repository.
@@ -114,7 +82,7 @@ Push to the branch (git push origin feature/amazing-feature).
 
 Open a Pull Request.
 
-Acknowledgments
+# Acknowledgments
 
 OpenAI: For providing the gpt-oss models.
 
