@@ -34,12 +34,18 @@ python src/main.py
 Note: Ensure you have Python 3.8+ installed. Check the Installation Guide for detailed setup instructions.
 
 # Example Results
+
 Before Training
+
 Question: If A > B and B > C, who is smallest?
+
 Target Model: A is smallest (Incorrect)
 
+
 After gpt-oss Training
+
 Question: If A > B and B > C, who is smallest?
+
 Target Model: C is smallest because in the chain A > B > C, C has the lowest value (Correct with reasoning)
 
 # How It Works
