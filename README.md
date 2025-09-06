@@ -46,35 +46,58 @@ How It Works
 The training pipeline operates in five key phases:
 
 Evaluation: The target model is tested on reasoning tasks to assess performance.
+
 Analysis: gpt-oss analyzes outputs to pinpoint specific failure patterns.
+
 Data Generation: Custom training examples are created to address identified weaknesses.
+
 Training: The target model is fine-tuned using the generated data.
+
 Meta-Learning: The training strategy is evaluated and optimized based on performance trends.
 
 Project Structure
+
 Orbis/
+
 ├── src/                    # Core source code
+
 │   ├── main.py             # Main training orchestrator
+
 │   ├── core/               # Core components
+
 │   │   ├── evaluator.py    # Model testing and evaluation
+
 │   │   ├── analyzer.py     # gpt-oss performance analysis
+
 │   │   ├── trainer.py      # Fine-tuning logic
+
 │   │   └── data_generator.py # Training data generation
+
 │   ├── models/             # Model loading and management
+
 │   └── utils/              # Utilities and helper functions
+
 ├── scripts/                # Utility scripts (e.g., download_models.py)
+
 ├── examples/               # Example scripts and demos
+
 ├── docs/                  # Documentation files
+
 ├── requirements.txt        # Project dependencies
+
 └── LICENSE                 # MIT License file
 
 
 Configuration
+
 Customize the training process by editing src/config/settings.py:
 
 Model Selection: Choose between gpt-oss-20b or gpt-oss-120b.
+
 Training Parameters: Adjust learning rates, batch sizes, and epochs.
+
 Evaluation Metrics: Define success criteria for model performance.
+
 Output Directories: Specify where logs and models are saved.
 
 
@@ -82,12 +105,19 @@ Contributing
 We welcome contributions! To contribute:
 
 Fork the repository.
+
 Create a feature branch (git checkout -b feature/amazing-feature).
+
 Commit your changes (git commit -m 'Add amazing feature').
+
 Push to the branch (git push origin feature/amazing-feature).
+
 Open a Pull Request.
 
 Acknowledgments
+
 OpenAI: For providing the gpt-oss models.
+
 Hugging Face: For model hosting and the transformers library.
+
 and also to the Open Source AI Community.
