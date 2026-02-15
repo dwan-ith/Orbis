@@ -11,13 +11,6 @@ Generating Targeted Data: Creates customized training examples to address weakne
 Adapting Dynamically: Adjusts training strategies based on model improvement patterns.
 Eliminating Manual Effort: Requires no manual curriculum design, enabling fully autonomous learning.
 
-This project was developed for the OpenAI Open Model Hackathon 2025.
-# Quick Start
-Get up and running in minutes with the following steps:
-## Clone the repository
-git clone https://github.com/dwan-ith/Orbis.git
-cd Orbis
-
 ## Install dependencies
 pip install -r requirements.txt
 
